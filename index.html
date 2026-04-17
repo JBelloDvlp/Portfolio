@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juan Bello | Full Stack Developer · .NET & IoT</title>
+  <meta name="description"
+    content="Portfolio de Juan Manuel Bello Díaz — Desarrollador Full Stack especializado en .NET, integración de hardware e IoT. Buenos Aires, Argentina." />
+  <meta property="og:title" content="Juan Bello | Full Stack Developer" />
+  <meta property="og:description"
+    content="Desarrollador Full Stack especializado en .NET, integración de hardware e IoT." />
+  <meta name="theme-color" content="#0d0d14" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    /* ─────────────────────────────────────────
+       DESIGN TOKENS
+    ───────────────────────────────────────── */
+    :root {
+      --bg-primary: #0d0d14;
+      --bg-secondary: #12121c;
+      --bg-card: #16161f;
+      --bg-card-hover: #1c1c28;
+      --border: rgba(255, 255, 255, 0.07);
+      --border-accent: rgba(99, 102, 241, 0.4);
+
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --cyan: #22d3ee;
+      --cyan-glow: rgba(34, 211, 238, 0.15);
+      --violet: #a78bfa;
+
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #475569;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --radius-xl: 32px;
+
+      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+      --shadow-accent: 0 0 40px rgba(99, 102, 241, 0.2);
+
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ─────────────────────────────────────────
+       RESET & BASE
+    ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ─────────────────────────────────────────
+       SCROLLBAR
+    ───────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    /* ─────────────────────────────────────────
+       NOISE OVERLAY
+    ───────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.3;
+    }
+
+    /* ─────────────────────────────────────────
+       BACKGROUND GLOW BLOBS
+    ───────────────────────────────────────── */
+    .bg-blobs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.12;
+      animation: blobFloat 12s ease-in-out infinite;
+    }
+    .blob-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -200px; animation-delay: 0s; }
+    .blob-2 { width: 500px; height: 500px; background: var(--cyan); bottom: -150px; right: -150px; animation-delay: 4s; }
+    .blob-3 { width: 400px; height: 400px; background: var(--violet); top: 40%; left: 50%; transform: translateX(-50%); animation-delay: 8s; }
+
+    @keyframes blobFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    /* ─────────────────────────────────────────
+       LAYOUT
+    ───────────────────────────────────────── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    section { padding: 100px 0; }
+
+    /* ─────────────────────────────────────────
+       NAVBAR
+    ───────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      transition: var(--transition);
+    }
+
+    nav.scrolled {
+      background: rgba(13, 13, 20, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--accent-light), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+      background: var(--accent-glow);
+    }
+
+    /* Language toggle */
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 4px;
+      cursor: pointer;
+      margin-left: 12px;
+    }
+
+    .lang-btn {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .lang-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text-secondary);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    /* ─────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 80px;
+      position: relative;
+    }
+
+    .hero-content { max-width: 780px; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-glow);
+      border: 1px solid var(--border-accent);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-light);
+      margin-bottom: 28px;
+      animation: fadeInUp 0.6s ease both;
+    }
+
+    .hero-badge .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--cyan);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 6vw, 4.2rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.6s 0.1s ease both;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent-light) 0%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+      animation: fadeInUp 0.6s 0.2s ease both;
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      animation: fadeInUp 0.6s 0.3s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--accent), #4f46e5);
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 13px 26px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 13px 26px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-ghost:hover {
+      color: var(--text-primary);
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+      transform: translateY(-2px);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      animation: fadeInUp 0.6s 0.6s ease both;
+    }
+
+    .hero-scroll .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollDown 1.5s ease infinite;
+    }
+
+    @keyframes scrollDown {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      51% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* Floating tech tags */
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 44px;
+      animation: fadeInUp 0.6s 0.4s ease both;
+    }
+
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 100px;
+      transition: var(--transition);
+    }
+
+    .tag:hover {
+      color: var(--accent-light);
+      border-color: var(--border-accent);
+      background: var(--accent-glow);
+    }
+
+    /* ─────────────────────────────────────────
+       SECTION HEADER
+    ───────────────────────────────────────── */
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent-light);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text-primary);
+    }
+
+    .section-title span {
+      background: linear-gradient(135deg, var(--accent-light), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-desc {
+      margin-top: 16px;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ─────────────────────────────────────────
+       ABOUT SECTION
+    ───────────────────────────────────────── */
+    #about { background: var(--bg-secondary); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .about-text p {
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent-glow), transparent);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .stat-card:hover { border-color: var(--border-accent); transform: translateY(-3px); }
+    .stat-card:hover::before { opacity: 1; }
+
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent-light), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ─────────────────────────────────────────
+       SKILLS
+    ───────────────────────────────────────── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-category {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-category::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: var(--transition);
+    }
+
+    .skill-category:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-accent);
+    }
+
+    .skill-category:hover::after { transform: scaleX(1); }
+
+    .skill-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent-glow);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: var(--accent-light);
+      margin-bottom: 16px;
+    }
+
+    .skill-category h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--text-primary);
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .skill-tag {
+      font-size: 0.73rem;
+      font-weight: 600;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 4px 11px;
+      border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace;
+      transition: var(--transition);
+    }
+
+    .skill-tag:hover {
+      color: var(--accent-light);
+      border-color: var(--border-accent);
+    }
+
+    /* ─────────────────────────────────────────
+       PROJECTS
+    ───────────────────────────────────────── */
+    #projects { background: var(--bg-secondary); }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 20%, var(--accent-glow), transparent 70%);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .project-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-accent), var(--shadow-card);
+    }
+
+    .project-card:hover::before { opacity: 1; }
+
+    .project-card.featured {
+      border-color: var(--border-accent);
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .project-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .project-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .project-icon.indigo { background: rgba(99,102,241,0.15); color: var(--accent-light); }
+    .project-icon.cyan { background: rgba(34,211,238,0.12); color: var(--cyan); }
+    .project-icon.violet { background: rgba(167,139,250,0.12); color: var(--violet); }
+
+    .project-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 100px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .badge-personal {
+      background: rgba(99,102,241,0.15);
+      color: var(--accent-light);
+      border: 1px solid rgba(99,102,241,0.3);
+    }
+
+    .badge-professional {
+      background: rgba(34,211,238,0.1);
+      color: var(--cyan);
+      border: 1px solid rgba(34,211,238,0.3);
+    }
+
+    .badge-open {
+      background: rgba(167,139,250,0.1);
+      color: var(--violet);
+      border: 1px solid rgba(167,139,250,0.3);
+    }
+
+    .project-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+
+    .project-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 20px;
+    }
+
+    .tech-pill {
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+
+    .link-btn.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .link-btn.primary:hover { background: var(--accent-light); transform: translateY(-1px); }
+
+    .link-btn.outline {
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .link-btn.outline:hover {
+      border-color: rgba(255,255,255,0.2);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    /* ─────────────────────────────────────────
+       EXPERIENCE
+    ───────────────────────────────────────── */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 48px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -36px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px var(--accent-glow);
+    }
+
+    .timeline-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px 32px;
+      transition: var(--transition);
+    }
+
+    .timeline-card:hover {
+      border-color: var(--border-accent);
+      transform: translateX(4px);
+    }
+
+    .timeline-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .timeline-role {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .timeline-date {
+      font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-light);
+      background: var(--accent-glow);
+      border: 1px solid var(--border-accent);
+      padding: 4px 12px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .timeline-company {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+    }
+
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .timeline-list li {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      padding-left: 18px;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .timeline-list li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent-light);
+      font-size: 0.75rem;
+      top: 2px;
+    }
+
+    /* ─────────────────────────────────────────
+       EDUCATION
+    ───────────────────────────────────────── */
+    #education { background: var(--bg-secondary); }
+
+    .education-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .edu-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      transition: var(--transition);
+      display: flex;
+      gap: 18px;
+    }
+
+    .edu-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-3px);
+    }
+
+    .edu-icon {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .edu-icon.degree { background: rgba(99,102,241,0.15); color: var(--accent-light); }
+    .edu-icon.school { background: rgba(34,211,238,0.12); color: var(--cyan); }
+    .edu-icon.course { background: rgba(167,139,250,0.12); color: var(--violet); }
+
+    .edu-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .edu-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .edu-year {
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    /* ─────────────────────────────────────────
+       CONTACT
+    ───────────────────────────────────────── */
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .contact-text h2 {
+      font-size: clamp(1.7rem, 3.5vw, 2.3rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .contact-text p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+
+    .contact-link:hover {
+      border-color: var(--border-accent);
+      color: var(--text-primary);
+      transform: translateX(4px);
+      background: var(--bg-card-hover);
+    }
+
+    .contact-link-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+
+    .contact-link-icon.email { background: rgba(99,102,241,0.15); color: var(--accent-light); }
+    .contact-link-icon.linkedin { background: rgba(10,102,194,0.2); color: #60a5fa; }
+    .contact-link-icon.github { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
+    .contact-link-icon.location { background: rgba(34,211,238,0.12); color: var(--cyan); }
+
+    .contact-link-text {
+      flex: 1;
+    }
+
+    .contact-link-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .contact-link-value {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .contact-link:hover .contact-link-value { color: var(--text-primary); }
+
+    .contact-form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      transition: var(--transition);
+      outline: none;
+      resize: none;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .form-group textarea { height: 130px; }
+
+    .form-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), #4f46e5);
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .form-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99,102,241,0.4);
+    }
+
+    /* ─────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      text-align: center;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-copy {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .footer-copy span {
+      color: var(--accent-light);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover { color: var(--text-primary); }
+
+    /* ─────────────────────────────────────────
+       ANIMATIONS
+    ───────────────────────────────────────── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─────────────────────────────────────────
+       MOBILE NAV
+    ───────────────────────────────────────── */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(13, 13, 20, 0.97);
+      backdrop-filter: blur(20px);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .mobile-nav.open { display: flex; }
+
+    .mobile-nav a {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+
+    .mobile-nav a:hover { color: var(--accent-light); }
+
+    .mobile-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+      background: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .mobile-close:hover { color: var(--text-primary); }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────── */
+    @media (max-width: 768px) {
+      section { padding: 70px 0; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .contact-wrapper { grid-template-columns: 1fr; gap: 40px; }
+      .project-card.featured { grid-column: 1; grid-template-columns: 1fr; }
+      .footer-inner { justify-content: center; text-align: center; }
+      .hero-cta { flex-direction: column; }
+      .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .about-stats { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ─────────────────────────────────────────
+       LANGUAGE HIDDEN
+    ───────────────────────────────────────── */
+    [data-lang="es"] .en { display: none; }
+    [data-lang="en"] .es { display: none; }
+
+    /* ─────────────────────────────────────────
+       AVAILABLE BADGE
+    ───────────────────────────────────────── */
+    .available-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #4ade80;
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.25);
+      padding: 5px 14px;
+      border-radius: 100px;
+    }
+
+    .available-badge .live-dot {
+      width: 7px;
+      height: 7px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background blobs -->
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Mobile nav -->
+  <div class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true">
+    <button class="mobile-close" id="mobileClose" aria-label="Close menu">✕</button>
+    <a href="#about" onclick="closeMobileNav()">
+      <span class="es">Sobre Mí</span><span class="en">About</span>
+    </a>
+    <a href="#skills" onclick="closeMobileNav()">
+      <span class="es">Habilidades</span><span class="en">Skills</span>
+    </a>
+    <a href="#projects" onclick="closeMobileNav()">
+      <span class="es">Proyectos</span><span class="en">Projects</span>
+    </a>
+    <a href="#experience" onclick="closeMobileNav()">
+      <span class="es">Experiencia</span><span class="en">Experience</span>
+    </a>
+    <a href="#contact" onclick="closeMobileNav()">
+      <span class="es">Contacto</span><span class="en">Contact</span>
+    </a>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="#" class="nav-logo">JB.</a>
+        <div class="nav-links" role="list">
+          <a href="#about" role="listitem">
+            <span class="es">Sobre Mí</span><span class="en">About</span>
+          </a>
+          <a href="#skills" role="listitem">
+            <span class="es">Habilidades</span><span class="en">Skills</span>
+          </a>
+          <a href="#projects" role="listitem">
+            <span class="es">Proyectos</span><span class="en">Projects</span>
+          </a>
+          <a href="#experience" role="listitem">
+            <span class="es">Experiencia</span><span class="en">Experience</span>
+          </a>
+          <a href="#contact" role="listitem">
+            <span class="es">Contacto</span><span class="en">Contact</span>
+          </a>
+
+          <div class="lang-toggle" role="group" aria-label="Language selector">
+            <button class="lang-btn active" id="btnEs" onclick="setLang('es')" aria-label="Español">ES</button>
+            <button class="lang-btn" id="btnEn" onclick="setLang('en')" aria-label="English">EN</button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="lang-toggle" style="display:none" id="mobileLangToggle" role="group">
+            <button class="lang-btn active" id="btnEsMob" onclick="setLang('es')">ES</button>
+            <button class="lang-btn" id="btnEnMob" onclick="setLang('en')">EN</button>
+          </div>
+          <div class="nav-hamburger" id="hamburger" role="button" aria-label="Open menu" tabindex="0">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          <span class="es">Buenos Aires, Argentina</span>
+          <span class="en">Buenos Aires, Argentina</span>
+        </div>
+
+        <h1>
+          <span class="es">Juan Manuel<br /><span>Bello Díaz</span></span>
+          <span class="en">Juan Manuel<br /><span>Bello Díaz</span></span>
+        </h1>
+
+        <p class="hero-desc es">
+          Desarrollador Full Stack especializado en el ecosistema <strong style="color:var(--text-primary)">.NET</strong>,
+          integración de hardware biométrico e <strong style="color:var(--text-primary)">IoT con ESP32</strong>.
+          Construyo plataformas robustas que conectan software y hardware en entornos corporativos de alta disponibilidad.
+        </p>
+        <p class="hero-desc en">
+          Full Stack Developer specialized in the <strong style="color:var(--text-primary)">.NET ecosystem</strong>,
+          biometric hardware integration and <strong style="color:var(--text-primary)">IoT with ESP32</strong>.
+          I build robust platforms that bridge software and hardware in high-availability corporate environments.
+        </p>
+
+        <div class="hero-cta">
+          <a href="#projects" class="btn-primary" id="hero-projects-btn">
+            <i class="fas fa-rocket"></i>
+            <span class="es">Ver Proyectos</span>
+            <span class="en">View Projects</span>
+          </a>
+          <a href="#contact" class="btn-ghost" id="hero-contact-btn">
+            <i class="fas fa-paper-plane"></i>
+            <span class="es">Contactarme</span>
+            <span class="en">Get in Touch</span>
+          </a>
+          <a href="https://github.com/JBelloDvlp" target="_blank" rel="noopener" class="btn-ghost" id="hero-github-btn">
+            <i class="fab fa-github"></i>
+            GitHub
+          </a>
+        </div>
+
+        <div class="hero-tags">
+          <span class="tag">C#</span>
+          <span class="tag">ASP.NET 8 MVC</span>
+          <span class="tag">SQL Server</span>
+          <span class="tag">Konva.js</span>
+          <span class="tag">ESP32</span>
+          <span class="tag">ZKTeco</span>
+          <span class="tag">HikVision</span>
+          <span class="tag">Git</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll" aria-hidden="true">
+      <span class="es" style="font-size:0.72rem;color:var(--text-muted)">scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid reveal">
+        <div class="about-text">
+          <span class="section-label es">Sobre Mí</span>
+          <span class="section-label en">About Me</span>
+
+          <h2 style="font-size:1.9rem;font-weight:800;letter-spacing:-1px;margin-bottom:20px;">
+            <span class="es">Desarrollador orientado a <span style="background:linear-gradient(135deg,var(--accent-light),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">resolver problemas reales</span></span>
+            <span class="en">Developer focused on <span style="background:linear-gradient(135deg,var(--accent-light),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">solving real problems</span></span>
+          </h2>
+
+          <p class="es">
+            Soy un desarrollador de software fuertemente orientado a la resolución de problemas y la creación de soluciones eficientes.
+            Tengo experiencia sólida trabajando en el ecosistema .NET (C#, ASP.NET 8 MVC, SQL Server) y me especializo en el desarrollo de
+            plataformas complejas.
+          </p>
+          <p class="en">
+            I'm a software developer strongly oriented towards problem-solving and creating efficient solutions.
+            I have solid experience working in the .NET ecosystem (C#, ASP.NET 8 MVC, SQL Server) and specialize in developing complex platforms.
+          </p>
+
+          <p class="es">
+            Me apasiona la integración entre software y hardware: trabajo profesionalmente con dispositivos biométricos y desarrollo
+            soluciones IoT con microcontroladores ESP32 de forma independiente. Busco seguir creciendo construyendo software robusto y de alto impacto.
+          </p>
+          <p class="en">
+            I'm passionate about the intersection of software and hardware: I work professionally with biometric devices and independently
+            develop IoT solutions with ESP32 microcontrollers. I aim to keep growing by building robust, high-impact software.
+          </p>
+
+          <div style="margin-top:24px;">
+            <span class="available-badge">
+              <span class="live-dot"></span>
+              <span class="es">Abierto a oportunidades</span>
+              <span class="en">Open to opportunities</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="about-stats">
+          <div class="stat-card">
+            <div class="stat-number">+2</div>
+            <div class="stat-label es">Años de experiencia</div>
+            <div class="stat-label en">Years of experience</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">4+</div>
+            <div class="stat-label es">Marcas de hardware integradas</div>
+            <div class="stat-label en">Hardware brands integrated</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">∞</div>
+            <div class="stat-label es">Problemas resueltos</div>
+            <div class="stat-label en">Problems solved</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">ESP32</div>
+            <div class="stat-label es">IoT & Firmware</div>
+            <div class="stat-label en">IoT & Firmware</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" style="background:var(--bg-primary)">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label es">Habilidades</span>
+        <span class="section-label en">Skills</span>
+        <h2 class="section-title">
+          <span class="es">Stack <span>Tecnológico</span></span>
+          <span class="en">Tech <span>Stack</span></span>
+        </h2>
+      </div>
+
+      <div class="skills-grid reveal">
+        <div class="skill-category">
+          <div class="skill-icon"><i class="fas fa-server"></i></div>
+          <h3>
+            <span class="es">Backend & Arquitectura</span>
+            <span class="en">Backend & Architecture</span>
+          </h3>
+          <div class="skill-tags">
+            <span class="skill-tag">C#</span>
+            <span class="skill-tag">ASP.NET 8 MVC</span>
+            <span class="skill-tag">.NET Core</span>
+            <span class="skill-tag">Razor Pages</span>
+            <span class="skill-tag">REST APIs</span>
+            <span class="skill-tag">Entity Framework</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-icon"><i class="fas fa-database"></i></div>
+          <h3>
+            <span class="es">Bases de Datos</span>
+            <span class="en">Databases</span>
+          </h3>
+          <div class="skill-tags">
+            <span class="skill-tag">SQL Server</span>
+            <span class="skill-tag">T-SQL</span>
+            <span class="skill-tag">Diseño relacional</span>
+            <span class="skill-tag">Optimización queries</span>
+            <span class="skill-tag">Migraciones EF</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-icon"><i class="fas fa-palette"></i></div>
+          <h3>Frontend</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">HTML5</span>
+            <span class="skill-tag">CSS3</span>
+            <span class="skill-tag">Konva.js</span>
+            <span class="skill-tag">Bootstrap</span>
+            <span class="skill-tag">AJAX</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-icon"><i class="fas fa-microchip"></i></div>
+          <h3>
+            <span class="es">IoT & Hardware</span>
+            <span class="en">IoT & Hardware</span>
+          </h3>
+          <div class="skill-tags">
+            <span class="skill-tag">C/C++ Arduino</span>
+            <span class="skill-tag">ESP32</span>
+            <span class="skill-tag">ZKTeco SDK</span>
+            <span class="skill-tag">HikVision API</span>
+            <span class="skill-tag">HID</span>
+            <span class="skill-tag">Suprema</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-icon"><i class="fas fa-tools"></i></div>
+          <h3>
+            <span class="es">Herramientas & DevOps</span>
+            <span class="en">Tools & DevOps</span>
+          </h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Git</span>
+            <span class="skill-tag">Visual Studio</span>
+            <span class="skill-tag">Windows Server</span>
+            <span class="skill-tag">Windows Service</span>
+            <span class="skill-tag">Cloudflare</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-icon"><i class="fas fa-shield-alt"></i></div>
+          <h3>
+            <span class="es">Integración & Protocolos</span>
+            <span class="en">Integration & Protocols</span>
+          </h3>
+          <div class="skill-tags">
+            <span class="skill-tag">SDKs terceros</span>
+            <span class="skill-tag">APIs REST</span>
+            <span class="skill-tag">RFID</span>
+            <span class="skill-tag">Biometría</span>
+            <span class="skill-tag">Multi-tenant</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label es">Proyectos</span>
+        <span class="section-label en">Projects</span>
+        <h2 class="section-title">
+          <span class="es">Lo que <span>construí</span></span>
+          <span class="en">What I <span>built</span></span>
+        </h2>
+        <p class="section-desc es">Proyectos que reflejan mi enfoque: software que conecta tecnología con impacto real.</p>
+        <p class="section-desc en">Projects that reflect my approach: software that connects technology with real impact.</p>
+      </div>
+
+      <div class="projects-grid reveal">
+
+        <!-- CasaStock — FEATURED -->
+        <div class="project-card featured" id="project-casastock">
+          <div>
+            <div class="project-header">
+              <div class="project-icon indigo"><i class="fas fa-boxes-stacked"></i></div>
+              <span class="project-badge badge-personal es">Proyecto Personal</span>
+              <span class="project-badge badge-personal en">Personal Project</span>
+            </div>
+            <h3 class="project-title">CasaStock</h3>
+            <p class="project-desc es">
+              Plataforma web <strong>multi-tenant</strong> para la gestión colaborativa de inventario doméstico y listas de compras compartidas.
+              Permite que familias u hogares compartan su inventario en tiempo real dentro de una organización aislada y segura.
+              <br /><br />
+              Cuenta con un sistema de invitación por tokens, roles de administrador, gestión de artículos con categorías de hasta 4 niveles,
+              y está desplegada como <strong>Windows Service</strong> en un servidor propio con acceso público via <strong>Cloudflare Tunnel</strong>.
+              <br /><br />
+              <em style="color:var(--text-muted);font-size:0.85rem;">
+                La visión a futuro es evolucionar hacia una plataforma SaaS escalable para la gestión de stock residencial y comercial de pequeña escala.
+              </em>
+            </p>
+            <p class="project-desc en">
+              A <strong>multi-tenant</strong> web platform for collaborative household inventory management and shared shopping lists.
+              Allows families or households to share their inventory in real-time within a secure, isolated organization.
+              <br /><br />
+              It features a token-based invitation system, admin roles, article management with up to 4-level categories,
+              and is deployed as a <strong>Windows Service</strong> on a private server accessible via <strong>Cloudflare Tunnel</strong>.
+              <br /><br />
+              <em style="color:var(--text-muted);font-size:0.85rem;">
+                The future vision is to evolve into a scalable SaaS platform for residential and small-scale commercial stock management.
+              </em>
+            </p>
+            <div class="project-tech">
+              <span class="tech-pill">ASP.NET 8 MVC</span>
+              <span class="tech-pill">C#</span>
+              <span class="tech-pill">SQL Server</span>
+              <span class="tech-pill">Entity Framework</span>
+              <span class="tech-pill">Multi-tenant</span>
+              <span class="tech-pill">Windows Service</span>
+              <span class="tech-pill">Cloudflare Tunnel</span>
+              <span class="tech-pill">Razor Pages</span>
+              <span class="tech-pill">Bootstrap</span>
+            </div>
+            <div class="project-links">
+              <a href="https://casastock.com.ar" target="_blank" rel="noopener" class="link-btn primary" id="casastock-live-btn">
+                <i class="fas fa-arrow-up-right-from-square"></i>
+                <span class="es">Ver en vivo</span><span class="en">Live Demo</span>
+              </a>
+            </div>
+          </div>
+
+          <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:28px;border:1px solid var(--border);position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--cyan));"></div>
+            <p style="font-size:0.72rem;font-family:'JetBrains Mono',monospace;color:var(--accent-light);margin-bottom:18px;letter-spacing:2px;">// ARCHITECTURE</p>
+
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);">
+                <i class="fas fa-globe" style="color:var(--accent-light);width:18px;"></i>
+                <div>
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-primary)">ASP.NET 8 MVC</div>
+                  <div style="font-size:0.7rem;color:var(--text-muted)">Web Application Layer</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);">
+                <i class="fas fa-building" style="color:var(--cyan);width:18px;"></i>
+                <div>
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-primary)">Multi-Tenant Architecture</div>
+                  <div style="font-size:0.7rem;color:var(--text-muted)">Isolated organizations + EF Global Filters</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);">
+                <i class="fas fa-database" style="color:var(--violet);width:18px;"></i>
+                <div>
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-primary)">SQL Server Express</div>
+                  <div style="font-size:0.7rem;color:var(--text-muted)">Relational DB + EF Core Migrations</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);">
+                <i class="fas fa-cloud" style="color:#f59e0b;width:18px;"></i>
+                <div>
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-primary)">Cloudflare Tunnel</div>
+                  <div style="font-size:0.7rem;color:var(--text-muted)">Public HTTPS access + CGNAT bypass</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);">
+                <i class="fas fa-cogs" style="color:#4ade80;width:18px;"></i>
+                <div>
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-primary)">Windows Service</div>
+                  <div style="font-size:0.7rem;color:var(--text-muted)">Self-hosted deployment, always-on</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INWeb -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-icon cyan"><i class="fas fa-fingerprint"></i></div>
+            <span class="project-badge badge-professional es">Profesional · Intelektron</span>
+            <span class="project-badge badge-professional en">Professional · Intelektron</span>
+          </div>
+          <h3 class="project-title">INWeb</h3>
+          <p class="project-desc es">
+            Plataforma corporativa de gestión integral de <strong>Control de Accesos, Tiempo, Asistencia y Visitas</strong>.
+            Integración backend con hardware biométrico de marcas líderes (ZKTeco, HikVision, HID, Suprema) y mapas interactivos de planos de planta con Konva.js para monitoreo en tiempo real.
+          </p>
+          <p class="project-desc en">
+            Corporate platform for comprehensive <strong>Access Control, Time, Attendance and Visitor Management</strong>.
+            Backend integration with leading biometric hardware brands (ZKTeco, HikVision, HID, Suprema) and interactive floor plan maps with Konva.js for real-time monitoring.
+          </p>
+          <div class="project-tech">
+            <span class="tech-pill">ASP.NET 8 MVC</span>
+            <span class="tech-pill">C#</span>
+            <span class="tech-pill">SQL Server</span>
+            <span class="tech-pill">Konva.js</span>
+            <span class="tech-pill">ZKTeco SDK</span>
+            <span class="tech-pill">HikVision API</span>
+            <span class="tech-pill">HID</span>
+            <span class="tech-pill">Suprema</span>
+          </div>
+          <div class="project-links">
+            <a href="https://www.intelektron.com" target="_blank" rel="noopener" class="link-btn outline" id="intelektron-link-btn">
+              <i class="fas fa-building"></i>
+              <span class="es">Empresa</span><span class="en">Company</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Sistema Gestión Pedidos -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-icon violet"><i class="fas fa-clipboard-list"></i></div>
+            <span class="project-badge badge-open">Open Source</span>
+          </div>
+          <h3 class="project-title">Sistema de Gestión de Pedidos</h3>
+          <p class="project-desc es">
+            Sistema web para la gestión y seguimiento de pedidos. Desarrollado con ASP.NET como práctica de arquitectura y patrones de diseño backend.
+          </p>
+          <p class="project-desc en">
+            Web system for order management and tracking. Developed with ASP.NET as a hands-on practice in architecture and backend design patterns.
+          </p>
+          <div class="project-tech">
+            <span class="tech-pill">ASP.NET</span>
+            <span class="tech-pill">C#</span>
+            <span class="tech-pill">SQL Server</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/JBelloDvlp/Sistema_Gestion_Pedidos" target="_blank" rel="noopener" class="link-btn outline" id="pedidos-github-btn">
+              <i class="fab fa-github"></i>
+              GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- Blog .NET 8 -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-icon indigo"><i class="fas fa-blog"></i></div>
+            <span class="project-badge badge-open">Open Source</span>
+          </div>
+          <h3 class="project-title">Blog — .NET 8 MVC + Repository Pattern</h3>
+          <p class="project-desc es">
+            Blog web desarrollado en .NET 8 MVC aplicando el patrón Repository. Ejercicio de arquitectura limpia, organización de capas y buenas prácticas de C#.
+          </p>
+          <p class="project-desc en">
+            Web blog built with .NET 8 MVC applying the Repository Pattern. Exercise in clean architecture, layer organization, and C# best practices.
+          </p>
+          <div class="project-tech">
+            <span class="tech-pill">ASP.NET 8</span>
+            <span class="tech-pill">C#</span>
+            <span class="tech-pill">Repository Pattern</span>
+            <span class="tech-pill">MVC</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/JBelloDvlp/Blog_Net8_MVC_Repository" target="_blank" rel="noopener" class="link-btn outline" id="blog-github-btn">
+              <i class="fab fa-github"></i>
+              GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- ESP32 IoT -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-icon cyan"><i class="fas fa-wifi"></i></div>
+            <span class="project-badge badge-personal es">Personal · IoT</span>
+            <span class="project-badge badge-personal en">Personal · IoT</span>
+          </div>
+          <h3 class="project-title">ESP32 IoT Solutions</h3>
+          <p class="project-desc es">
+            Desarrollo independiente de firmware en C/C++ para microcontroladores ESP32. Captura de variables ambientales mediante sensores, control de periféricos IR y exposición de datos vía API RESTful a medida.
+          </p>
+          <p class="project-desc en">
+            Independent firmware development in C/C++ for ESP32 microcontrollers. Environmental variable capture via sensors, IR peripheral control, and data exposure through a custom RESTful API.
+          </p>
+          <div class="project-tech">
+            <span class="tech-pill">C/C++</span>
+            <span class="tech-pill">ESP32</span>
+            <span class="tech-pill">Arduino Framework</span>
+            <span class="tech-pill">REST API</span>
+            <span class="tech-pill">Sensors</span>
+            <span class="tech-pill">IR Control</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" style="background:var(--bg-secondary)">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label es">Experiencia</span>
+        <span class="section-label en">Experience</span>
+        <h2 class="section-title">
+          <span class="es">Trayectoria <span>Profesional</span></span>
+          <span class="en">Professional <span>Journey</span></span>
+        </h2>
+      </div>
+
+      <div class="timeline reveal">
+        <div class="timeline-item">
+          <div class="timeline-card">
+            <div class="timeline-top">
+              <div>
+                <div class="timeline-role es">Desarrollador de Software</div>
+                <div class="timeline-role en">Software Developer</div>
+                <div class="timeline-company">
+                  <a href="https://www.intelektron.com" target="_blank" rel="noopener" style="color:var(--accent-light);font-weight:600;">
+                    Intelektron S.A.
+                  </a>
+                  &nbsp;· Buenos Aires
+                </div>
+              </div>
+              <div class="timeline-date">10/2023 — <span class="es">Actualidad</span><span class="en">Present</span></div>
+            </div>
+
+            <ul class="timeline-list">
+              <li class="es">Desarrollo y mantenimiento evolutivo de <strong>INWeb</strong>, plataforma corporativa de Control de Accesos, Tiempo, Asistencia y Visitas.</li>
+              <li class="en">Development and evolutionary maintenance of <strong>INWeb</strong>, a corporate platform for Access Control, Time, Attendance, and Visitor Management.</li>
+
+              <li class="es">Integración backend de hardware de terceros: dispositivos biométricos, lectoras RFID y molinetes de ZKTeco, HikVision, HID y Suprema.</li>
+              <li class="en">Backend integration of third-party hardware: biometric devices, RFID readers, and turnstiles from ZKTeco, HikVision, HID, and Suprema.</li>
+
+              <li class="es">Implementación de interfaces interactivas en frontend con <strong>Konva.js</strong> para el módulo de Control de Accesos — planos de planta con monitoreo de controladores en tiempo real.</li>
+              <li class="en">Implementation of interactive frontend interfaces with <strong>Konva.js</strong> for the Access Control module — floor plans with real-time controller monitoring.</li>
+
+              <li class="es">Desarrollo end-to-end de un sistema satélite de comunicación interna (ASP.NET 8 MVC + SQL Server) para la gestión de licencias entre sistemas y ventas.</li>
+              <li class="en">End-to-end development of an internal communication satellite system (ASP.NET 8 MVC + SQL Server) for license management between the systems and sales teams.</li>
+
+              <li class="es">Resolución de bugs críticos, optimización de consultas SQL y control de versiones activo con Git en entorno de desarrollo continuo.</li>
+              <li class="en">Critical bug resolution, SQL query optimization, and active version control with Git in a continuous development environment.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label es">Formación</span>
+        <span class="section-label en">Education</span>
+        <h2 class="section-title">
+          <span class="es">Educación & <span>Cursos</span></span>
+          <span class="en">Education & <span>Courses</span></span>
+        </h2>
+      </div>
+
+      <div class="education-grid reveal">
+        <div class="edu-card">
+          <div class="edu-icon degree"><i class="fas fa-graduation-cap"></i></div>
+          <div>
+            <div class="edu-title es">Técnico Superior en Desarrollo de Software</div>
+            <div class="edu-title en">Higher Technical Degree in Software Development</div>
+            <div class="edu-sub">Instituto Superior Santo Domingo</div>
+            <div class="edu-year">2020 — 2023</div>
+          </div>
+        </div>
+
+        <div class="edu-card">
+          <div class="edu-icon school"><i class="fas fa-school"></i></div>
+          <div>
+            <div class="edu-title">Bachiller en Cs. Naturales</div>
+            <div class="edu-sub">E.E.M. N.° 6 · Olavarría</div>
+            <div class="edu-year">2011</div>
+          </div>
+        </div>
+
+        <div class="edu-card">
+          <div class="edu-icon course"><i class="fab fa-html5"></i></div>
+          <div>
+            <div class="edu-title es">Desarrollo Web Completo</div>
+            <div class="edu-title en">Complete Web Development</div>
+            <div class="edu-sub">HTML5, CSS3, JS, AJAX, PHP & MySQL — Udemy</div>
+            <div class="edu-year">2020</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" style="background:var(--bg-secondary)">
+    <div class="container">
+      <div class="contact-wrapper reveal">
+        <div class="contact-text">
+          <span class="section-label es">Contacto</span>
+          <span class="section-label en">Contact</span>
+          <h2>
+            <span class="es">¿Hablamos?</span>
+            <span class="en">Let's talk.</span>
+          </h2>
+          <p class="es">
+            Estoy abierto a nuevas oportunidades laborales, colaboraciones o simplemente charlar sobre tecnología.
+            No dudes en escribirme.
+          </p>
+          <p class="en">
+            I'm open to new job opportunities, collaborations, or just talking about technology.
+            Don't hesitate to reach out.
+          </p>
+
+          <div class="contact-links">
+            <a href="mailto:onsteel@gmail.com" class="contact-link" id="contact-email-link">
+              <div class="contact-link-icon email"><i class="fas fa-envelope"></i></div>
+              <div class="contact-link-text">
+                <div class="contact-link-label">Email</div>
+                <div class="contact-link-value">onsteel@gmail.com</div>
+              </div>
+              <i class="fas fa-arrow-right" style="color:var(--text-muted);font-size:0.75rem;"></i>
+            </a>
+
+            <a href="https://www.linkedin.com/in/juanmbello/" target="_blank" rel="noopener" class="contact-link" id="contact-linkedin-link">
+              <div class="contact-link-icon linkedin"><i class="fab fa-linkedin"></i></div>
+              <div class="contact-link-text">
+                <div class="contact-link-label">LinkedIn</div>
+                <div class="contact-link-value">in/juanmbello</div>
+              </div>
+              <i class="fas fa-arrow-right" style="color:var(--text-muted);font-size:0.75rem;"></i>
+            </a>
+
+            <a href="https://github.com/JBelloDvlp" target="_blank" rel="noopener" class="contact-link" id="contact-github-link">
+              <div class="contact-link-icon github"><i class="fab fa-github"></i></div>
+              <div class="contact-link-text">
+                <div class="contact-link-label">GitHub</div>
+                <div class="contact-link-value">JBelloDvlp</div>
+              </div>
+              <i class="fas fa-arrow-right" style="color:var(--text-muted);font-size:0.75rem;"></i>
+            </a>
+
+            <div class="contact-link" style="cursor:default;">
+              <div class="contact-link-icon location"><i class="fas fa-location-dot"></i></div>
+              <div class="contact-link-text">
+                <div class="contact-link-label">
+                  <span class="es">Ubicación</span><span class="en">Location</span>
+                </div>
+                <div class="contact-link-value">Ciudad Autónoma de Buenos Aires</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact form -->
+        <div class="contact-form-card">
+          <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:24px;">
+            <span class="es">Enviarme un mensaje</span>
+            <span class="en">Send me a message</span>
+          </h3>
+          <form id="contactForm" onsubmit="handleFormSubmit(event)">
+            <div class="form-group">
+              <label for="contact-name">
+                <span class="es">Nombre</span><span class="en">Name</span>
+              </label>
+              <input type="text" id="contact-name" name="name" required
+                placeholder="Juan García" />
+            </div>
+            <div class="form-group">
+              <label for="contact-email-input">Email</label>
+              <input type="email" id="contact-email-input" name="email" required
+                placeholder="tu@email.com" />
+            </div>
+            <div class="form-group">
+              <label for="contact-message">
+                <span class="es">Mensaje</span><span class="en">Message</span>
+              </label>
+              <textarea id="contact-message" name="message" required
+                placeholder="..."></textarea>
+            </div>
+            <button type="submit" class="form-btn" id="contact-submit-btn">
+              <span class="es">Enviar mensaje <i class="fas fa-paper-plane"></i></span>
+              <span class="en">Send message <i class="fas fa-paper-plane"></i></span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-copy">
+          <span class="es">© 2025 <span>Juan Manuel Bello Díaz</span>. Hecho con ♥ en Buenos Aires.</span>
+          <span class="en">© 2025 <span>Juan Manuel Bello Díaz</span>. Made with ♥ in Buenos Aires.</span>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/JBelloDvlp" target="_blank" rel="noopener" id="footer-github">GitHub</a>
+          <a href="https://www.linkedin.com/in/juanmbello/" target="_blank" rel="noopener" id="footer-linkedin">LinkedIn</a>
+          <a href="mailto:onsteel@gmail.com" id="footer-email">Email</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─────────────────────────────────────────
+       JAVASCRIPT
+  ───────────────────────────────────────── -->
+  <script>
+    // ── Language toggle ──────────────────────
+    function setLang(lang) {
+      document.documentElement.setAttribute('data-lang', lang);
+      // Desktop + mobile buttons
+      ['Es', 'En'].forEach(l => {
+        document.getElementById('btn' + l)?.classList.remove('active');
+        document.getElementById('btn' + l + 'Mob')?.classList.remove('active');
+      });
+      const key = lang === 'es' ? 'Es' : 'En';
+      document.getElementById('btn' + key)?.classList.add('active');
+      document.getElementById('btn' + key + 'Mob')?.classList.add('active');
+    }
+
+    // ── Navbar scroll effect ─────────────────
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // ── Mobile nav ───────────────────────────
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileClose = document.getElementById('mobileClose');
+    const mobileLangToggle = document.getElementById('mobileLangToggle');
+
+    function openMobileNav() {
+      mobileNav.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileNav() {
+      mobileNav.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    hamburger.addEventListener('click', openMobileNav);
+    hamburger.addEventListener('keydown', e => { if (e.key === 'Enter') openMobileNav(); });
+    mobileClose.addEventListener('click', closeMobileNav);
+
+    // Show mobile lang toggle on small screens
+    function checkMobileLang() {
+      if (window.innerWidth <= 768) {
+        mobileLangToggle.style.display = 'flex';
+      } else {
+        mobileLangToggle.style.display = 'none';
+      }
+    }
+    checkMobileLang();
+    window.addEventListener('resize', checkMobileLang);
+
+    // ── Scroll reveal ────────────────────────
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          entry.target.style.transitionDelay = (i * 0.05) + 's';
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // ── Contact form ─────────────────────────
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('contact-submit-btn');
+      const lang = document.documentElement.getAttribute('data-lang');
+
+      btn.disabled = true;
+      btn.innerHTML = lang === 'es'
+        ? '<i class="fas fa-check"></i> ¡Mensaje enviado!'
+        : '<i class="fas fa-check"></i> Message sent!';
+      btn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.style.background = '';
+        btn.innerHTML = lang === 'es'
+          ? '<span class="es">Enviar mensaje <i class="fas fa-paper-plane"></i></span><span class="en" style="display:none">Send message <i class="fas fa-paper-plane"></i></span>'
+          : '<span class="es" style="display:none">Enviar mensaje <i class="fas fa-paper-plane"></i></span><span class="en">Send message <i class="fas fa-paper-plane"></i></span>';
+        document.getElementById('contactForm').reset();
+      }, 3000);
+
+      // Open mailto as fallback
+      const name = document.getElementById('contact-name').value;
+      const email = document.getElementById('contact-email-input').value;
+      const message = document.getElementById('contact-message').value;
+      const subject = encodeURIComponent(`Contacto desde portfolio — ${name}`);
+      const body = encodeURIComponent(`${message}\n\nDe: ${name}\nEmail: ${email}`);
+      window.location.href = `mailto:onsteel@gmail.com?subject=${subject}&body=${body}`;
+    }
+  </script>
+
+</body>
+</html>
