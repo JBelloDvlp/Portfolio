@@ -627,6 +627,7 @@
       background: radial-gradient(circle at 20% 20%, var(--accent-glow), transparent 70%);
       opacity: 0;
       transition: var(--transition);
+      pointer-events: none;
     }
 
     .project-card:hover {
@@ -1970,15 +1971,19 @@
     // ── Language toggle ──────────────────────
     function setLang(lang) {
       document.documentElement.setAttribute('data-lang', lang);
+      localStorage.setItem('lang', lang);
       // Desktop + mobile buttons
-      ['Es', 'En'].forEach(l => {
-        document.getElementById('btn' + l)?.classList.remove('active');
-        document.getElementById('btn' + l + 'Mob')?.classList.remove('active');
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        if (btn.textContent.trim().toLowerCase() === lang) btn.classList.add('active');
       });
-      const key = lang === 'es' ? 'Es' : 'En';
-      document.getElementById('btn' + key)?.classList.add('active');
-      document.getElementById('btn' + key + 'Mob')?.classList.add('active');
     }
+
+    // Restore saved language on load
+    (function() {
+      const saved = localStorage.getItem('lang') || 'es';
+      setLang(saved);
+    })();
 
     // ── Navbar scroll effect ─────────────────
     const navbar = document.getElementById('navbar');
@@ -2045,9 +2050,7 @@
       setTimeout(() => {
         btn.disabled = false;
         btn.style.background = '';
-        btn.innerHTML = lang === 'es'
-          ? '<span class="es">Enviar mensaje <i class="fas fa-paper-plane"></i></span><span class="en" style="display:none">Send message <i class="fas fa-paper-plane"></i></span>'
-          : '<span class="es" style="display:none">Enviar mensaje <i class="fas fa-paper-plane"></i></span><span class="en">Send message <i class="fas fa-paper-plane"></i></span>';
+        btn.innerHTML = '<span class="es">Enviar mensaje <i class="fas fa-paper-plane"></i></span><span class="en">Send message <i class="fas fa-paper-plane"></i></span>';
         document.getElementById('contactForm').reset();
       }, 3000);
 
